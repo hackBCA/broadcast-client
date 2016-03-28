@@ -67,7 +67,7 @@
         socket = io.connect(url);
         messagesContainer = document.querySelector(container);
         textInputEl = document.querySelector(textInput);
-        submitButtonEl = document.querySelector(submitButtonEl);
+        submitButtonEl = document.querySelector(submitButton);
         if (submitButtonEl) {
             buttonInit();
         }
