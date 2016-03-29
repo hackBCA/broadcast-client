@@ -4,20 +4,33 @@
     var messagesContainer;
     var textInputEl;
     var submitButtonEl;
+    var audio;
 
     var generateMessage = function (id, sender_name, message, timestamp) {
+        var senderSpan = document.createElement("span");
+        senderSpan.className = "sender";
+        senderSpan.innerText = sender_name + ": ";
+
         var messageSpan = document.createElement("span");
         messageSpan.className = "message";
         messageSpan.innerText = message;
 
+        var timeSplit = timestamp.split(" ");
+
+        var dateSpan = document.createElement("span");
+        dateSpan.className = "datestamp";
+        dateSpan.innerText = timeSplit[0];
+
         var timeSpan = document.createElement("span");
         timeSpan.className = "timestamp";
-        timeSpan.innerText = timestamp + ": ";
+        timeSpan.innerText = timeSplit[1] + " " + timeSplit[2];
 
         var container = document.createElement("div");
         container.id = id;
-        container.appendChild(timeSpan);
+        container.appendChild(senderSpan);
         container.appendChild(messageSpan);
+        container.appendChild(dateSpan);
+        container.appendChild(timeSpan);
         return container;
     }
 
@@ -25,6 +38,7 @@
         if (!document.getElementById(data.id)) {
             var message = generateMessage(data.id, data.sender_name, data.message, data.timestamp);
             messagesContainer.appendChild(message);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     };
 
@@ -37,6 +51,7 @@
             });
 
             socket.on("receive_message", function(data) {
+                audio.play();
                 publishMessage(data);
             });
         });
@@ -49,25 +64,40 @@
     };
 
     var sendMessage = function (message) {
-        socket.emit("send_message", message, function (data) {
-            console.log(data);
-        });
+        var message = message.trim();
+        if (message.length < 1) {
+            console.log("Error: Message is empty.");
+        } else {
+            socket.emit("send_message", message, function (data) {
+                console.log(data);
+            });
+        }
     };
 
     exports.broadcast = function () {
-        var message = textInputEl.value;
-        sendMessage(message);
+        var message = (textInputEl.value).trim();
+        if (message.length < 1) {
+            console.log("Error: Message is empty.");
+        } else {
+            sendMessage(message);
+        }
+        textInputEl.value = "";
     };
 
     exports.broadcastWithMessage = function (message) {
         sendMessage(message);
     };
 
-    exports.init = function (url, container, textInput, submitButton) {
+    exports.toggleAudio = function (toggle) {
+
+    };
+
+    exports.init = function (url, container, audioUrl, textInput, submitButton) {
         socket = io.connect(url);
         messagesContainer = document.querySelector(container);
         textInputEl = document.querySelector(textInput);
         submitButtonEl = document.querySelector(submitButton);
+        audio = new Audio(audioUrl);
         if (submitButtonEl) {
             buttonInit();
         }
