@@ -5,6 +5,7 @@
     var textInputEl;
     var submitButtonEl;
     var audio;
+    var session;
 
     var generateMessage = function (id, sender_name, message, timestamp) {
         var senderSpan = document.createElement("span");
@@ -68,7 +69,7 @@
         if (message.length < 1) {
             console.log("Error: Message is empty.");
         } else {
-            socket.emit("send_message", message, function (data) {
+            socket.emit("send_message", message, session, function (data) {
                 console.log(data);
             });
         }
@@ -92,12 +93,17 @@
 
     };
 
-    exports.init = function (url, container, audioUrl, textInput, submitButton) {
+    exports.deleteWithId = function (id) {
+
+    }
+
+    exports.init = function (url, container, audioUrl, sessionStr, textInput, submitButton) {
         socket = io.connect(url);
         messagesContainer = document.querySelector(container);
         textInputEl = document.querySelector(textInput);
         submitButtonEl = document.querySelector(submitButton);
         audio = new Audio(audioUrl);
+        session = sessionStr;
         if (submitButtonEl) {
             buttonInit();
         }
