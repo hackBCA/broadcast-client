@@ -38,8 +38,8 @@
     var publishMessage = function (data) {
         if (!document.getElementById(data.id)) {
             var message = generateMessage(data.id, data.sender_name, data.message, data.timestamp);
-            messagesContainer.appendChild(message);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messagesContainer.insertBefore(message, messagesContainer.firstChild);
+            messagesContainer.scrollTop = 0;
         }
     };
 
