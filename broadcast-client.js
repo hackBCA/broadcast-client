@@ -89,14 +89,6 @@
         sendMessage(message);
     };
 
-    exports.toggleAudio = function (toggle) {
-
-    };
-
-    exports.deleteWithId = function (id) {
-
-    }
-
     exports.init = function (url, container, audioUrl, sessionStr, textInput, submitButton) {
         socket = io.connect(url);
         messagesContainer = document.querySelector(container);
